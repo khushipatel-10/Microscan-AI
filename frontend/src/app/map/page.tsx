@@ -3,6 +3,7 @@
 import { useState, useRef, useCallback } from 'react';
 import Map, { Marker, Popup, NavigationControl, Layer, Source, FillLayer, MapRef } from 'react-map-gl/mapbox';
 import 'mapbox-gl/dist/mapbox-gl.css';
+import Link from 'next/link';
 import { ShieldAlert, MapPin, Info, Navigation, Droplets } from 'lucide-react';
 
 // Mock Data for Demo (unchanged)
@@ -391,6 +392,13 @@ export default function MapPage() {
                                     <Info className="w-3 h-3" />
                                     {popupInfo.isWaterBody ? 'Estimated via Hydraulic Modeling' : 'Valid Optical Scan Data'}
                                 </div>
+
+                                <Link
+                                    href={`/map/details?name=${encodeURIComponent(popupInfo.name || '')}&score=${popupInfo.score}&status=${popupInfo.status}&note=${encodeURIComponent(popupInfo.note || '')}`}
+                                    className="block mt-3 w-full text-center bg-blue-600 hover:bg-blue-700 text-white text-xs py-2 rounded font-medium transition-colors"
+                                >
+                                    View Detailed Analysis
+                                </Link>
                             </div>
                         </Popup>
                     )}
