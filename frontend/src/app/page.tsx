@@ -32,7 +32,7 @@ export default function Home() {
                   className="inline-flex h-12 items-center justify-center rounded-none border border-cyan-400 bg-cyan-500/10 px-8 text-sm font-bold text-cyan-300 shadow-[0_0_20px_rgba(6,182,212,0.15)] transition-all hover:bg-cyan-500 hover:text-white hover:shadow-[0_0_30px_rgba(6,182,212,0.4)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-cyan-400 uppercase tracking-wider relative overflow-hidden group"
                 >
                   <span className="relative z-10 flex items-center">
-                    Launch Scanner
+                    Launch Scanner 
                     <ArrowRight className="ml-2 h-4 w-4 group-hover:translate-x-1 transition-transform" />
                   </span>
                   <div className="absolute inset-0 bg-cyan-500/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
@@ -59,8 +59,8 @@ export default function Home() {
                 {/* Floating Card */}
                 <div className="text-center p-8 bg-black/60 backdrop-blur-xl border border-cyan-500/30 relative z-10 shadow-2xl">
                   <div className="absolute -top-1 -right-1 w-20 h-20 bg-cyan-500/20 blur-3xl rounded-full"></div>
-                  <p className="font-mono text-xs font-bold text-cyan-400 mb-2 tracking-widest uppercase">Target Locked</p>
-                  <div className="text-6xl font-black text-white mb-2 tracking-tighter tabular-nums text-transparent bg-clip-text bg-gradient-to-b from-white to-cyan-200">78<span className="text-3xl text-cyan-500/50">/100</span></div>
+                  <p className="font-mono text-xs font-bold text-cyan-400 mb-2 tracking-widest uppercase">Target Locked ‼️</p>
+                  <div className="text-6xl font-black text-white mb-2 tracking-tighter tabular-nums text-transparent bg-clip-text bg-gradient-to-b from-white to-cyan-200">🤔<span className="text-3xl text-cyan-500/50">/100</span></div>
                   <div className="flex items-center justify-center gap-2 text-xs text-cyan-200 font-mono">
                     <span className="w-2 h-2 bg-red-500 animate-[pulse_0.5s_infinite]"></span>
                     CONTAMINATION_DETECTED

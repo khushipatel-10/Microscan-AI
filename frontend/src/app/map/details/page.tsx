@@ -5,6 +5,7 @@ import { ArrowLeft, Thermometer, Wind, AlertTriangle, TrendingUp, Waves, Factory
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, AreaChart, Area } from 'recharts';
 import Link from 'next/link';
 import { Suspense, useState } from 'react';
+import AlgaeDashboard from '@/components/dashboard/AlgaeDashboard';
 
 // Mock Data Generators
 // Deterministic Pseudo-Random Number Generator
@@ -60,7 +61,7 @@ const generateDynamicDetails = (name: string, score: number) => {
         return data.reverse();
     };
 
-    // 4. Algae Risk (Simulated)
+    // 4. Algae Risk (Simulated Advanced Data)
     const algaeScore = Math.floor(score * 0.7 + (rng() * 30));
     const algaeLevel = algaeScore > 60 ? "Critical" : algaeScore > 40 ? "High" : algaeScore > 20 ? "Moderate" : "Low";
     const algaeDrivers = [];
@@ -68,10 +69,45 @@ const generateDynamicDetails = (name: string, score: number) => {
     if (turbidity > 60) algaeDrivers.push("High Turbidity");
     if (algaeScore > 40 && algaeDrivers.length === 0) algaeDrivers.push("Nutrient Load");
 
+    // Mock Advanced Data for Dashboard
+    const advanced_data = {
+        satellite: {
+            analysis_date: new Date().toISOString().split('T')[0],
+            ndvi_anomaly: parseFloat((rng() * 0.5 - 0.1).toFixed(2)),
+            chlorophyll_a: parseFloat((algaeScore * 0.5 + rng() * 10).toFixed(1)),
+            cyanobacteria_index: algaeScore > 50 ? "High" : "Low"
+        },
+        nutrients: {
+            nitrogen: parseFloat((0.5 + rng()).toFixed(2)),
+            phosphorus: parseFloat((0.02 + rng() * 0.1).toFixed(3))
+        },
+        forecast: Array.from({ length: 7 }).map((_, i) => ({
+            day: new Date(Date.now() + i * 86400000).toLocaleDateString('en-US', { weekday: 'short' }),
+            risk: Math.min(100, Math.max(0, Math.floor(algaeScore + (rng() * 20 - 10))))
+        })),
+        management_actions: algaeScore > 50 ? [
+            "Issue Public Advisory: No Contact.",
+            "Increase sampling frequency to daily.",
+            "Deploy aeration in stagnant zones."
+        ] : [
+            "Routine monitoring.",
+            "Maintain baseline nutrient analysis."
+        ]
+    };
+
     return {
         riskFactors,
         env: { temp, aqi, flow },
-        algae: { level: algaeLevel, score: algaeScore, drivers: algaeDrivers },
+        algae: {
+            risk_score: algaeScore,
+            risk_level: algaeLevel,
+            score: algaeScore, // Legacy prop
+            level: algaeLevel, // Legacy prop
+            drivers: algaeDrivers,
+            action: "See dashboard for details.",
+            details: "Multi-modal analysis.",
+            advanced_data
+        },
         generateTrend
     };
 };
@@ -185,180 +221,142 @@ function DetailsContent() {
                         <p className="text-xs text-zinc-500">Local station data.</p>
                     </div>
 
-                </div>
-
-                <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 hover:bg-zinc-900 transition-colors">
-                    <div className="flex items-center gap-3 mb-4">
-                        <div className="p-2 bg-purple-500/10 rounded-lg">
-                            <Waves className="w-5 h-5 text-purple-400" />
+                    <div className="bg-zinc-900/50 border border-zinc-800 rounded-xl p-6 hover:bg-zinc-900 transition-colors">
+                        <div className="flex items-center gap-3 mb-4">
+                            <div className="p-2 bg-purple-500/10 rounded-lg">
+                                <Waves className="w-5 h-5 text-purple-400" />
+                            </div>
+                            <h3 className="font-semibold text-zinc-200">Flow Rate</h3>
                         </div>
-                        <h3 className="font-semibold text-zinc-200">Flow Rate</h3>
+                        <div className="text-2xl font-bold text-white mb-1">{details.env.flow}</div>
+                        <p className="text-xs text-zinc-500">Volumetric flow estimation.</p>
                     </div>
-                    <div className="text-2xl font-bold text-white mb-1">{details.env.flow}</div>
-                    <p className="text-xs text-zinc-500">Volumetric flow estimation.</p>
                 </div>
-            </div>
 
-            {/* Algae Bloom Forecast (Dynamic) */}
-            {(details.algae.score > 20) && (
-                <div className={`rounded-xl border p-6 relative overflow-hidden
-                        ${details.algae.level === 'Critical' ? 'bg-red-950/20 border-red-500/20' :
-                        details.algae.level === 'High' ? 'bg-orange-950/20 border-orange-500/20' :
-                            'bg-green-950/10 border-green-500/10'}`}>
+                {/* Algae Bloom Forecast (Dashboard) */}
+                {(details.algae.risk_score > 20) && (
+                    <AlgaeDashboard data={details.algae} />
+                )}
 
-                    <div className="flex justify-between items-start mb-4">
+                {/* Trends Graph */}
+                <section className="bg-zinc-900 ring-1 ring-zinc-800 rounded-xl p-6 md:p-8">
+                    <div className="flex items-center justify-between mb-8">
                         <div>
-                            <h3 className={`font-bold uppercase font-mono mb-1 flex items-center gap-2
-                                    ${details.algae.level === 'Critical' ? 'text-red-400' :
-                                    details.algae.level === 'High' ? 'text-orange-400' : 'text-green-400'}`}>
-                                <Droplets className="w-4 h-4" />
-                                Harmful Algal Bloom (HAB) Forecast
+                            <h3 className="text-lg font-bold text-white flex items-center gap-2">
+                                <TrendingUp className="w-5 h-5 text-blue-500" />
+                                {timeRange} Risk Trend
                             </h3>
-                            <div className="text-2xl font-black text-white">
-                                {details.algae.level} Risk
-                            </div>
+                            <p className="text-sm text-zinc-400">Historical analysis.</p>
                         </div>
-                        <div className={`w-10 h-10 rounded-full flex items-center justify-center border
-                                ${details.algae.level === 'Critical' ? 'bg-red-500/20 border-red-500 text-red-500' :
-                                details.algae.level === 'High' ? 'bg-orange-500/20 border-orange-500 text-orange-500' : 'bg-green-500/20 border-green-500 text-green-500'}`}>
-                            <AlertTriangle className="w-5 h-5" />
-                        </div>
+                        <select
+                            value={timeRange}
+                            onChange={(e) => setTimeRange(e.target.value)}
+                            className="bg-zinc-950 border border-zinc-800 text-sm text-zinc-300 rounded-md px-3 py-1.5 focus:outline-none focus:border-zinc-700"
+                        >
+                            <option>Last Month</option>
+                            <option>Last 6 Months</option>
+                            <option>Last Year</option>
+                            <option>Last 3 Years</option>
+                        </select>
                     </div>
 
-                    <div className="space-y-1">
-                        <span className="text-[10px] text-zinc-500 uppercase tracking-widest font-bold">Key Drivers</span>
-                        <div className="flex flex-wrap gap-2">
-                            {details.algae.drivers.length > 0 ? details.algae.drivers.map((driver, i) => (
-                                <span key={i} className="text-xs bg-black/40 px-2 py-1 rounded border border-white/10 text-zinc-300">
-                                    {driver}
-                                </span>
-                            )) : (
-                                <span className="text-xs text-zinc-500">No significant drivers detected.</span>
-                            )}
-                        </div>
+                    <div className="w-full h-[300px]">
+                        <ResponsiveContainer width="100%" height={300}>
+                            <AreaChart data={trendData}>
+                                <defs>
+                                    <linearGradient id="scoreHighlight" x1="0" y1="0" x2="0" y2="1">
+                                        <stop offset="5%" stopColor={chartColor} stopOpacity={0.3} />
+                                        <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
+                                    </linearGradient>
+                                </defs>
+                                <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
+                                <XAxis
+                                    dataKey="name"
+                                    stroke="#52525b"
+                                    tick={{ fill: '#71717a', fontSize: 12 }}
+                                    axisLine={false}
+                                    tickLine={false}
+                                    dy={10}
+                                />
+                                <YAxis
+                                    stroke="#52525b"
+                                    tick={{ fill: '#71717a', fontSize: 12 }}
+                                    axisLine={false}
+                                    tickLine={false}
+                                    dx={-10}
+                                />
+                                <Tooltip
+                                    contentStyle={{ backgroundColor: '#09090b', borderColor: '#27272a', borderRadius: '8px', color: '#fff' }}
+                                    itemStyle={{ color: '#fff' }}
+                                />
+                                <Area
+                                    type="monotone"
+                                    dataKey="score"
+                                    stroke={chartColor}
+                                    strokeWidth={3}
+                                    fillOpacity={1}
+                                    fill="url(#scoreHighlight)"
+                                />
+                            </AreaChart>
+                        </ResponsiveContainer>
                     </div>
-                </div>
-            )}
+                </section>
 
-            {/* Trends Graph */}
-            <section className="bg-zinc-900 ring-1 ring-zinc-800 rounded-xl p-6 md:p-8">
-                <div className="flex items-center justify-between mb-8">
+                {/* Dynamic Sources (Simplified for Demo) */}
+                <section className="grid md:grid-cols-2 gap-8 pt-4">
                     <div>
-                        <h3 className="text-lg font-bold text-white flex items-center gap-2">
-                            <TrendingUp className="w-5 h-5 text-blue-500" />
-                            {timeRange} Risk Trend
-                        </h3>
-                        <p className="text-sm text-zinc-400">Historical analysis.</p>
-                    </div>
-                    <select
-                        value={timeRange}
-                        onChange={(e) => setTimeRange(e.target.value)}
-                        className="bg-zinc-950 border border-zinc-800 text-sm text-zinc-300 rounded-md px-3 py-1.5 focus:outline-none focus:border-zinc-700"
-                    >
-                        <option>Last Month</option>
-                        <option>Last 6 Months</option>
-                        <option>Last Year</option>
-                        <option>Last 3 Years</option>
-                    </select>
-                </div>
-
-                <div className="w-full h-[300px]">
-                    <ResponsiveContainer width="100%" height={300}>
-                        <AreaChart data={trendData}>
-                            <defs>
-                                <linearGradient id="scoreHighlight" x1="0" y1="0" x2="0" y2="1">
-                                    <stop offset="5%" stopColor={chartColor} stopOpacity={0.3} />
-                                    <stop offset="95%" stopColor={chartColor} stopOpacity={0} />
-                                </linearGradient>
-                            </defs>
-                            <CartesianGrid strokeDasharray="3 3" stroke="#27272a" vertical={false} />
-                            <XAxis
-                                dataKey="name"
-                                stroke="#52525b"
-                                tick={{ fill: '#71717a', fontSize: 12 }}
-                                axisLine={false}
-                                tickLine={false}
-                                dy={10}
-                            />
-                            <YAxis
-                                stroke="#52525b"
-                                tick={{ fill: '#71717a', fontSize: 12 }}
-                                axisLine={false}
-                                tickLine={false}
-                                dx={-10}
-                            />
-                            <Tooltip
-                                contentStyle={{ backgroundColor: '#09090b', borderColor: '#27272a', borderRadius: '8px', color: '#fff' }}
-                                itemStyle={{ color: '#fff' }}
-                            />
-                            <Area
-                                type="monotone"
-                                dataKey="score"
-                                stroke={chartColor}
-                                strokeWidth={3}
-                                fillOpacity={1}
-                                fill="url(#scoreHighlight)"
-                            />
-                        </AreaChart>
-                    </ResponsiveContainer>
-                </div>
-            </section>
-
-            {/* Dynamic Sources (Simplified for Demo) */}
-            <section className="grid md:grid-cols-2 gap-8 pt-4">
-                <div>
-                    <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
-                        <Factory className="w-5 h-5 text-zinc-400" />
-                        Potential Contamination Sources
-                    </h4>
-                    <p className="text-zinc-400 text-sm leading-relaxed mb-4">
-                        Analysis suggests the following likely contributors:
-                    </p>
-                    <ul className="space-y-3">
-                        <li className="flex items-start gap-3 p-3 bg-zinc-900/50 rounded-lg border border-zinc-800/50">
-                            <div className="mt-1 w-2 h-2 rounded-full bg-red-500 shrink-0"></div>
-                            <div>
-                                <span className="block text-sm font-medium text-white">
-                                    {score > 60 ? "Industrial Effluent" : "Agricultural Runoff"}
-                                </span>
-                                <span className="text-xs text-zinc-500">
-                                    {score > 60 ? "Proximity to industrial zones." : "Fertilizer and sediment runoff."}
-                                </span>
-                            </div>
-                        </li>
-                        <li className="flex items-start gap-3 p-3 bg-zinc-900/50 rounded-lg border border-zinc-800/50">
-                            <div className="mt-1 w-2 h-2 rounded-full bg-yellow-500 shrink-0"></div>
-                            <div>
-                                <span className="block text-sm font-medium text-white">Urban Runoff</span>
-                                <span className="text-xs text-zinc-500">General urban debris and tire wear particles.</span>
-                            </div>
-                        </li>
-                    </ul>
-                </div>
-                <div>
-                    <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
-                        <Building2 className="w-5 h-5 text-zinc-400" />
-                        Community Impact
-                    </h4>
-                    <div className="bg-blue-900/10 border border-blue-900/30 p-6 rounded-xl">
-                        <p className="text-blue-100 text-sm leading-relaxed mb-4">
-                            {score > 60 ?
-                                "High contamination levels pose risks to local wildlife and potentially groundwater. Remediation is recommended." :
-                                "Water quality is generally acceptable but requires ongoing monitoring to prevent degradation."
-                            }
+                        <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
+                            <Factory className="w-5 h-5 text-zinc-400" />
+                            Potential Contamination Sources
+                        </h4>
+                        <p className="text-zinc-400 text-sm leading-relaxed mb-4">
+                            Analysis suggests the following likely contributors:
                         </p>
-                        <div className="flex gap-3">
-                            <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md text-xs font-semibold transition-colors">
-                                Download Report
-                            </button>
-                            <button className="flex-1 bg-white hover:bg-zinc-100 text-zinc-900 py-2 rounded-md text-xs font-semibold transition-colors">
-                                Share
-                            </button>
+                        <ul className="space-y-3">
+                            <li className="flex items-start gap-3 p-3 bg-zinc-900/50 rounded-lg border border-zinc-800/50">
+                                <div className="mt-1 w-2 h-2 rounded-full bg-red-500 shrink-0"></div>
+                                <div>
+                                    <span className="block text-sm font-medium text-white">
+                                        {score > 60 ? "Industrial Effluent" : "Agricultural Runoff"}
+                                    </span>
+                                    <span className="text-xs text-zinc-500">
+                                        {score > 60 ? "Proximity to industrial zones." : "Fertilizer and sediment runoff."}
+                                    </span>
+                                </div>
+                            </li>
+                            <li className="flex items-start gap-3 p-3 bg-zinc-900/50 rounded-lg border border-zinc-800/50">
+                                <div className="mt-1 w-2 h-2 rounded-full bg-yellow-500 shrink-0"></div>
+                                <div>
+                                    <span className="block text-sm font-medium text-white">Urban Runoff</span>
+                                    <span className="text-xs text-zinc-500">General urban debris and tire wear particles.</span>
+                                </div>
+                            </li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h4 className="font-bold text-lg mb-4 flex items-center gap-2">
+                            <Building2 className="w-5 h-5 text-zinc-400" />
+                            Community Impact
+                        </h4>
+                        <div className="bg-blue-900/10 border border-blue-900/30 p-6 rounded-xl">
+                            <p className="text-blue-100 text-sm leading-relaxed mb-4">
+                                {score > 60 ?
+                                    "High contamination levels pose risks to local wildlife and potentially groundwater. Remediation is recommended." :
+                                    "Water quality is generally acceptable but requires ongoing monitoring to prevent degradation."
+                                }
+                            </p>
+                            <div className="flex gap-3">
+                                <button className="flex-1 bg-blue-600 hover:bg-blue-700 text-white py-2 rounded-md text-xs font-semibold transition-colors">
+                                    Download Report
+                                </button>
+                                <button className="flex-1 bg-white hover:bg-zinc-100 text-zinc-900 py-2 rounded-md text-xs font-semibold transition-colors">
+                                    Share
+                                </button>
+                            </div>
                         </div>
                     </div>
-                </div>
-            </section>
-        </div>
+                </section>
+            </div>
         </main >
     );
 }

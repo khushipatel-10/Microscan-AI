@@ -35,6 +35,20 @@ export interface AnalysisResponse {
         drivers: string[];
         action: string;
         details: string;
+        advanced_data?: {
+            satellite: {
+                analysis_date: string;
+                ndvi_anomaly: number;
+                chlorophyll_a: number;
+                cyanobacteria_index: string;
+            };
+            nutrients: {
+                nitrogen: number;
+                phosphorus: number;
+            };
+            forecast: Array<{ day: string; risk: number }>;
+            management_actions: string[];
+        };
     };
     technical_breakdown: {
         turbidity_contribution: number;
