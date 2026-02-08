@@ -109,6 +109,6 @@ async def analyze_image_with_gemini(image_base64: str) -> dict:
             "risk_score": 0,
             "confidence": 0,
             "reasoning_short": "Analysis Error",
-            "details": "Could not process image with AI service.",
+            "details": f"AI Service Error: {str(e)}",
             "tags": ["error"]
         }

@@ -4,7 +4,7 @@ import CyberGrid from "@/components/ui/CyberGrid";
 
 export default function Home() {
   return (
-    <main className="flex min-h-screen flex-col bg-slate-950 selection:bg-cyan-500/30">
+    <main className="flex min-h-screen flex-col selection:bg-cyan-500/30">
       {/* Hero Section */}
       <section className="relative w-full py-24 lg:py-32 xl:py-48 text-white overflow-hidden">
         {/* Background Grid */}

@@ -5,7 +5,6 @@ import Map, { Marker, Popup, NavigationControl, Layer, Source, FillLayer, MapRef
 import 'mapbox-gl/dist/mapbox-gl.css';
 import Link from 'next/link';
 import { ShieldAlert, MapPin, Info, Navigation, Droplets, ArrowLeft } from 'lucide-react';
-import CyberGrid from '@/components/ui/CyberGrid';
 
 // Mock Data for Demo (unchanged)
 const MOCK_RISK_POINTS = [
@@ -220,7 +219,6 @@ export default function MapPage() {
         <main className="flex h-screen w-full bg-slate-950 text-white pt-16 font-sans">
             {/* SIDEBAR */}
             <aside className="w-80 h-full bg-slate-900 border-r border-cyan-900/50 flex flex-col z-20 shadow-xl relative overflow-hidden">
-                <CyberGrid />
                 <div className="absolute inset-0 bg-slate-900/90 -z-10"></div>
 
                 <div className="p-6 border-b border-cyan-500/20 relative z-10">
@@ -300,7 +298,7 @@ export default function MapPage() {
             </aside>
 
             {/* MAP CONTAINER */}
-            <div className="flex-1 w-full h-full relative">
+            <div className="flex-1 w-full h-full relative z-10">
                 <Link href="/" className="absolute top-4 left-4 z-30 p-2 bg-black/60 text-white hover:text-cyan-400 border border-white/10 backdrop-blur-md transition-colors rounded-none">
                     <ArrowLeft className="w-6 h-6" />
                 </Link>

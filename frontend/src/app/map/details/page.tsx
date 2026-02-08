@@ -65,8 +65,8 @@ function DetailsContent() {
                         <h1 className="text-3xl font-bold">{name}</h1>
                         <div className="flex items-center gap-2 text-zinc-400 text-sm">
                             <span className={`px-2 py-0.5 rounded-full text-xs font-bold uppercase tracking-wider border ${score > 70 ? 'border-red-500/50 bg-red-500/10 text-red-500' :
-                                    score > 40 ? 'border-yellow-500/50 bg-yellow-500/10 text-yellow-500' :
-                                        'border-green-500/50 bg-green-500/10 text-green-500'
+                                score > 40 ? 'border-yellow-500/50 bg-yellow-500/10 text-yellow-500' :
+                                    'border-green-500/50 bg-green-500/10 text-green-500'
                                 }`}>
                                 {status} Risk
                             </span>
@@ -177,8 +177,8 @@ function DetailsContent() {
                         </select>
                     </div>
 
-                    <div className="h-[300px] w-full min-h-[300px]">
-                        <ResponsiveContainer width="100%" height="100%">
+                    <div className="h-[300px] w-full min-h-[300px]" style={{ width: '100%', height: 300 }}>
+                        <ResponsiveContainer width="100%" height="100%" minWidth={0}>
                             <AreaChart data={trendData}>
                                 <defs>
                                     <linearGradient id="scoreHighlight" x1="0" y1="0" x2="0" y2="1">
