@@ -1,0 +1,9 @@
+fastapi
+uvicorn
+motor
+beanie
+python-dotenv
+google-generativeai
+numpy
+opencv-python-headless
+pydantic
