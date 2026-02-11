@@ -49,7 +49,6 @@ Built with a modern, high-performance stack for speed and scalability.
 | **Styling** | ![TailwindCSS](https://img.shields.io/badge/Tailwind-CSS-38B2AC) ![Shadcn](https://img.shields.io/badge/Shadcn-UI-000000) | Beautiful, accessible components. |
 | **Maps** | ![Mapbox](https://img.shields.io/badge/Mapbox-GL-blueviolet) | High-performance interactive maps. |
 | **Backend** | ![FastAPI](https://img.shields.io/badge/FastAPI-0.109-009688) | High-performance Python API. |
-| **Database** | ![MongoDB](https://img.shields.io/badge/MongoDB-Motor-47A248) | Scalable NoSQL storage for geospatial data. |
 | **AI / ML** | ![Gemini](https://img.shields.io/badge/Google-Gemini-4285F4) ![OpenCV](https://img.shields.io/badge/OpenCV-Computer_Vision-5C3EE8) | Advanced image processing and generative AI. |
 
 ## 🏁 Getting Started
@@ -85,7 +84,7 @@ Follow these steps to set up the project locally.
     ```
 
 4.  **Environment Variables**
-    Create a `.env` file in `backend/` and `.env.local` in `frontend/` with your API keys (Mapbox, Gemini, MongoDB URI).
+    Create a `.env` file in `backend/` and `.env.local` in `frontend/` with your API keys (Mapbox, LLM).
 
 ### Running Locally
 
